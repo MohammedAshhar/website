@@ -192,8 +192,8 @@ margin-left:-5px;
 }
 
 .banner a{
-margin:0 10px;
-color:#000;
+	margin:0 10px;
+	color:#1E3A5F;
 }
 
 .logo{
@@ -262,23 +262,30 @@ background:#167ce9;
 
 /*NAVIGATION*/
 .topnav {
-overflow: hidden;
+display: flex;
+align-items: center;
 background-color: #1E3A5F;
 }
 
 .topnav a {
-float: left;
-display: block;
+display: inline-flex;
+align-items: center;
 color: #f2f2f2;
 text-align: center;
 padding: 14px 28px;
 text-decoration: none;
 font-size: 17px;
 }
+.nav-icon {
+width: 18px;
+height: 18px;
+margin-right: 6px;
+filter: brightness(0) invert(1);
+}
 
 .active {
 color: #f1c40f;
-margin-left:440px;
+margin-left: auto;
 }
 
 .highlight-link {
@@ -314,7 +321,6 @@ outline:none !important;
 }
 
 .dropdown {
-float: left;
 overflow: hidden;
 }
 
@@ -378,8 +384,8 @@ animation-duration: 1s;
 display: none;
 }
 .topnav a.icon {
-float: right;
-display: block;
+margin-left: auto;
+display: flex;
 }
 }
 
@@ -392,21 +398,19 @@ height:50px;
 width:100%;
 transition:0.5s;
 }
-.topnav.responsive {position: relative;height:70vh;overflow-y:auto;z-index:1;}
+.topnav.responsive {position: relative;height:70vh;overflow-y:auto;z-index:1;flex-direction:column;align-items:stretch;}
 .topnav.responsive .icon {
 position: absolute;
 right: 0;
 top: 0;
 }
 .topnav.responsive a {
-float: none;
-display: block;
+display: flex;
 text-align: left;
 }
-.topnav.responsive .dropdown {float: none;}
 .topnav.responsive .dropdown-content {position: relative;}
 .topnav.responsive .dropdown .dropbtn {
-display: block;
+display: flex;
 width: 100%;
 text-align: left;
 }
@@ -1009,6 +1013,117 @@ font-size:1.5em;
 }
 }
 
+/*LABORATORY SERVICES*/
+.lab-services{
+width:100%;
+padding:8vh 0;
+text-align:center;
+background:#f8f9fa;
+}
+.section-title{
+font-size:2.5em;
+margin:0 0 10px;
+color:#1E1E1E;
+}
+.section-subtitle{
+font-size:1.1em;
+color:#666;
+margin:0 0 50px;
+}
+.lab-cards{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:30px;
+width:90%;
+margin:auto;
+}
+.lab-card{
+width:30%;
+min-width:300px;
+background:#fff;
+border-radius:12px;
+padding:2.5rem 2rem;
+box-shadow:0px 4px 20px rgba(1,1,1,0.08);
+transition:transform 0.3s, box-shadow 0.3s;
+text-align:center;
+}
+.lab-card:hover{
+transform:translateY(-5px);
+box-shadow:0px 8px 30px rgba(1,1,1,0.15);
+}
+.lab-card .fa{
+font-size:3em;
+color:#167ce9;
+margin-bottom:15px;
+}
+.lab-card h3{
+font-size:1.3em;
+margin:0 0 12px;
+color:#1E1E1E;
+}
+.lab-card p{
+font-size:0.95em;
+color:#555;
+line-height:1.6;
+margin:0;
+}
+@media (max-width:820px){
+.lab-card{
+width:100%;
+min-width:unset;
+padding:2rem;
+}
+.section-title{
+font-size:1.8em;
+}
+}
+
+/*GENERAL TREATMENT*/
+.treatment-services{
+width:100%;
+padding:8vh 0;
+text-align:center;
+background:#fff;
+}
+.treat-card{
+width:30%;
+min-width:300px;
+background:#f8f9fa;
+border-radius:12px;
+padding:2.5rem 2rem;
+box-shadow:0px 4px 20px rgba(1,1,1,0.08);
+transition:transform 0.3s, box-shadow 0.3s;
+text-align:center;
+}
+.treat-card:hover{
+transform:translateY(-5px);
+box-shadow:0px 8px 30px rgba(1,1,1,0.15);
+}
+.treat-card .fa{
+font-size:3em;
+color:#27ae60;
+margin-bottom:15px;
+}
+.treat-card h3{
+font-size:1.3em;
+margin:0 0 12px;
+color:#1E1E1E;
+}
+.treat-card p{
+font-size:0.95em;
+color:#555;
+line-height:1.6;
+margin:0;
+}
+@media (max-width:820px){
+.treat-card{
+width:100%;
+min-width:unset;
+padding:2rem;
+}
+}
+
 /*APPOINTMENT PAGE*/
 .appointment-page{
 width:100%;
@@ -1277,8 +1392,72 @@ width:95%;
 display:block;
 }
 footer .column:nth-child(1) a:nth-child(3),footer .column:nth-child(1) a:nth-child(4),footer .column:nth-child(1) a:nth-child(5){
-width:28px;
-height:28px;
-font-size:1.3em;
+	width:28px;
+	height:28px;
+	font-size:1.3em;
 }
 }
+
+/*BOOKING LIGHTBOX*/
+.booking-modal{
+display:none;
+position:fixed;
+z-index:9999;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+overflow:auto;
+}
+.booking-modal-content{
+background:#fff;
+margin:5% auto;
+padding:40px 30px;
+border-radius:12px;
+width:90%;
+max-width:480px;
+position:relative;
+box-shadow:0 10px 40px rgba(0,0,0,0.3);
+}
+.booking-close{
+position:absolute;
+top:15px;
+right:20px;
+font-size:2em;
+cursor:pointer;
+color:#888;
+transition:0.3s;
+}
+.booking-close:hover{
+color:#000;
+}
+.booking-modal-content em{
+font-size:1em;
+}
+.booking-modal-content h1{
+margin:5px 0 10px;
+font-size:1.6em;
+}
+.booking-modal-content p{
+margin:0 0 20px;
+color:#555;
+font-size:0.9em;
+}
+.booking-modal-content input,.booking-modal-content select,.booking-modal-content textarea{
+width:100%;
+padding:12px 15px;
+margin:8px 0;
+border:1px solid #ddd;
+border-radius:8px;
+font-family:inherit;
+font-size:0.95em;
+outline:none;
+transition:0.3s;
+box-sizing:border-box;
+}
+.booking-modal-content input:focus,.booking-modal-content select:focus,.booking-modal-content textarea:focus{
+border-color:#167ce9;
+}
+}
+

@@ -52,11 +52,11 @@
 </div>
 
 <div class="topnav" id="myTopnav">
-<a href="index.html" class="active">Home</a>
-<a href="specialities.html">Specialities</a>
-<a href="appointments.html" class="highlight-link">Book a Test</a>
-<a href="reports.html" class="download-btn">Download Report</a>
-<a href="contact.html">Contact us</a>
+<a href="index.html" class="active"><img src="images/home icon.png" class="nav-icon"> Home</a>
+<a href="specialities.html"><img src="images/specialities icon.png" class="nav-icon"> Specialities</a>
+<a href="appointments.html" class="highlight-link"><img src="images/booking icon.png" class="nav-icon"> Book a Test</a>
+<a href="reports.html" class="download-btn"><img src="images/download icon.png" class="nav-icon"> Download Report</a>
+<a href="contact.html"><img src="images/contact us icon.png" class="nav-icon"> Contact us</a>
 <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
 </div>
 </header>
@@ -129,24 +129,30 @@
 <!--SECTION3-->
 <section class="section3" id="specialities">
 <div class="cards">
+<a href="specialities.html#lab-services" style="display:block;color:inherit;text-decoration:none;">
 <div class="card">
 <section>
 <h1>Laboratory Services</h1>
-<h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit</h4>
+<h4>Comprehensive diagnostic tests with accurate and timely results</h4>
 </section>
 </div>
+</a>
+<a href="specialities.html#general-treatment" style="display:block;color:inherit;text-decoration:none;">
 <div class="card">
 <section>
 <h1>General Treatment</h1>
 <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit</h4>
 </section>
 </div>
+</a>
+<a href="specialities.html#general-treatment" style="display:block;color:inherit;text-decoration:none;">
 <div class="card">
 <section>
 <h1>Orthopedician</h1>
 <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit</h4>
 </section>
 </div>
+</a>
 </div>
 <div class="content">
 <h1>We are well experienced doctors</h1>
@@ -239,52 +245,116 @@
 
 
 
+<!--BOOKING LIGHTBOX-->
+<div id="bookingModal" class="booking-modal">
+<div class="booking-modal-content">
+<span class="booking-close" onclick="closeBookingModal()">&times;</span>
+<em>BOOK NOW</em>
+<h1>Schedule Your Test</h1>
+<p>Fill in your details and we'll get back to you within 24 hours.</p>
+<form id="bookingFormModal">
+<input type="text" name="fname" placeholder="Full Name" maxlength="60" required />
+<input type="tel" name="phone" placeholder="Phone" maxlength="15" required />
+<select name="test" required>
+<option value="">Select Test</option>
+<option value="Creatinine Test">Creatinine Test</option>
+<option value="CBC Test">CBC Test</option>
+<option value="C Reactive Protein Test">C Reactive Protein Test</option>
+<option value="Blood Sugar">Blood Sugar</option>
+</select>
+<textarea name="address" placeholder="Home Collection Address" rows="3" required></textarea>
+<button type="submit" class="btn2" style="width:100%;">BOOK A TEST</button>
+</form>
+<div id="bookingModalResult" style="display:none;margin-top:20px;padding:15px;background:#e8f5e9;border-radius:8px;color:#2e7d32;"></div>
+</div>
+</div>
+
 <!--FOOTER-->
 <img src="https://i.ibb.co/ZLHbWJz/footer.png" class="footer_image">
 <footer>
 <div class="column">
-<a class="footer_title">COMPANY_NAME</a>
-<a>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</a>
-<a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>
-<a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
-<a href="#" title="Twitter"><i class="fa fa-twitter"></i></a>
+<a class="footer_title">Our Address</a>
+<a><strong>UNICUS DIAGNOSTICS</strong><br><br>10-4-35/1/2, Sarojini Eye<br>Hospital Road, Masab Tank<br>Hyderabad 500028 T.S, India.<br><br>Email:<br>support@unicusdiagnostics.com<br>Phone: +919885104989</a>
 </div>
 <div class="column">
-<a class="footer_title">OTHER LINKS</a>
-<a href="#">Privacy Policy</a>
-<a href="#">Terms & Conditions</a>
-<a href="#">Ticket</a>
-<a href="#">Contact Us</a>
+<a class="footer_title">Our Services</a>
+<a>Clinics<br>Diagnostics<br>Pharmacy<br>Speciality Clinics</a>
 </div>
 <div class="column">
-<a class="footer_title">SHORT CUT</a>
-<a href="">Our Services</a>
-<a href="">Our Blog</a>
-<a href="">Our Projects</a>
-<a href="">About Us</a>
+<a class="footer_title">Specialities</a>
+<a>General Medicine<br>Urology<br>Pediatric<br>ENT</a>
 </div>
 <div class="column">
-<a class="footer_title">LATEST NEWS</a>
-<a href="" title="Lorem ipsum dolor sit amet"><img src="https://source.unsplash.com/50x50/?green,trees"></a>
-<a href="" title="Lorem ipsum dolor sit amet"><img src="https://source.unsplash.com/50x50/?green,tree"></a>
-<a href="" title="Lorem ipsum dolor sit amet"><img src="https://source.unsplash.com/50x50/?green,plant"></a>
-<a href="" title="Lorem ipsum dolor sit amet"><img src="https://source.unsplash.com/50x50/?green,forest"></a>
-<a href="" title="Lorem ipsum dolor sit amet"><img src="https://source.unsplash.com/50x50/?green,afforestation"></a>
+<a class="footer_title">Follow Us</a>
+<a href="https://www.facebook.com/unicusdiagnostics" target="_blank" title="Facebook" style="font-size:24px;margin-right:10px;"><i class="fa fa-facebook"></i></a>
+<a href="https://www.instagram.com/unicusdiagnostics/" target="_blank" title="Instagram" style="font-size:24px;"><i class="fa fa-instagram"></i></a>
 </div>
-<div class="column">
-<a class="footer_title">GET IN TOUCH</a>
-<a title="Address"><i class="fa fa-map-marker"></i> 007, street, province/state, country - zipcode</a>
-<a href="emailto:" title="Email"><i class="fa fa-envelope"></i> email@serviceprovider.domain</a>
-<a href="tel:" title="Contact"><i class="fa fa-phone"></i> +(x)-xxxx-xxxxx</a>
-</div>
-
 
 <div class="sub-footer">
-© CopyRights 2021 Company_name || All rights reserved
+© CopyRights 2021 Unicus Diagnostics || All rights reserved
 </div>
 </footer>
 
 <!--JAVASCRIPT-->
 <script src="script.js"></script>
+<script>
+function openBookingModal() {
+document.getElementById('bookingModal').style.display = 'block';
+document.body.style.overflow = 'hidden';
+}
+function closeBookingModal() {
+document.getElementById('bookingModal').style.display = 'none';
+document.body.style.overflow = '';
+}
+window.onclick = function(e) {
+var m = document.getElementById('bookingModal');
+if (e.target == m) closeBookingModal();
+};
+window.addEventListener('load', function() {
+setTimeout(openBookingModal, 1500);
+});
+document.getElementById('bookingFormModal').addEventListener('submit', function(e) {
+e.preventDefault();
+var btn = this.querySelector('button');
+btn.disabled = true;
+btn.textContent = 'SUBMITTING...';
+var data = {
+patient_name: this.fname.value,
+patient_phone: this.phone.value,
+test_name: this.test.value,
+collection_address: this.address.value
+};
+fetch('/api/booking/create', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify(data)
+})
+.then(function(r) { return r.json().then(function(data) { return {status: r.status, body: data}; }); })
+.then(function(res) {
+var result = document.getElementById('bookingModalResult');
+result.style.display = 'block';
+if (res.status >= 400) {
+result.style.background = '#fce4e4';
+result.style.color = '#c62828';
+result.innerHTML = '<strong>Error:</strong> ' + (res.body.error || 'Something went wrong');
+} else {
+result.style.background = '#e8f5e9';
+result.style.color = '#2e7d32';
+result.innerHTML = '<strong>Booking Confirmed!</strong><br>Booking ID: ' + res.body.booking_id + '<br>Test: ' + res.body.test_name + '<br>Status: ' + res.body.status;
+}
+btn.disabled = false;
+btn.textContent = 'BOOK A TEST';
+})
+.catch(function(err) {
+var result = document.getElementById('bookingModalResult');
+result.style.display = 'block';
+result.style.background = '#fce4e4';
+result.style.color = '#c62828';
+result.innerHTML = '<strong>Error submitting booking.</strong> Make sure the server is running.';
+btn.disabled = false;
+btn.textContent = 'BOOK A TEST';
+});
+});
+</script>
 </body>
 </html>

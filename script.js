@@ -95,6 +95,13 @@ function closeModal() {
 document.getElementById("myModal").style.display = "none";
 }
 
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+var m = document.getElementById('myModal');
+if (m && m.style.display === 'block') closeModal();
+}
+});
+
 var slideIndex = 1;
 showSlides(slideIndex);
 

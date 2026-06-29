@@ -44,21 +44,21 @@
 <a href="https://www.instagram.com/unicusdiagnostics/" target="_blank" title="Instagram"><i class="fa fa-instagram"></i></a>
 </span>
 </div>
-
 <div class="logo parallelogram">
 <span class="skew-fix">
+<a href="index.html" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;">
 <img src="Unicus Diagnostics Logo.png" alt="Unicus">
 <span class="logo-text">Unicus Diagnostics</span>
+</a>
 </span>
 </div>
-
+<a href="javascript:void(0);" class="mobile-menu-icon" onclick="myFunction()">&#9776;</a>
 <div class="topnav" id="myTopnav">
 <a href="index.html" class="active"><img src="images/home icon.png" class="nav-icon"> Home</a>
 <a href="specialities.html"><img src="images/specialities icon.png" class="nav-icon"> Specialities</a>
 <a href="appointments.html" class="highlight-link"><img src="images/booking icon.png" class="nav-icon"> Book a Test</a>
 <a href="downloaded%20reports/index.html" class="download-btn"><img src="images/download icon.png" class="nav-icon"> Download Report</a>
 <a href="contact.html"><img src="images/contact us icon.png" class="nav-icon"> Contact us</a>
-<a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
 </div>
 </header>
 
@@ -138,7 +138,7 @@
 </section>
 </div>
 </a>
-<a href="specialities.html#lab-services" style="display:block;color:inherit;text-decoration:none;">
+<a href="#lab-services" style="display:block;color:inherit;text-decoration:none;">
 <div class="card">
 <section>
 <h1>Laboratory Services</h1>
@@ -146,7 +146,7 @@
 </section>
 </div>
 </a>
-<a href="specialities.html#general-treatment" style="display:block;color:inherit;text-decoration:none;">
+<a href="#general-treatment" style="display:block;color:inherit;text-decoration:none;">
 <div class="card">
 <section>
 <h1>General Treatment</h1>
@@ -161,7 +161,81 @@
 </div>
 </section>
 
+<!--LABORATORY SERVICES-->
+<section id="lab-services" class="lab-services">
+<h1 class="section-title">Our Laboratory Services</h1>
+<p class="section-subtitle">State-of-the-art diagnostic services with accurate and timely results</p>
+<div class="lab-cards">
+<div class="lab-card">
+<i class="fa fa-flask"></i>
+<h3>Clinical Biochemistry</h3>
+<p>Comprehensive blood chemistry analysis including kidney function, liver function, lipid profile, and blood sugar testing for accurate metabolic assessment.</p>
+</div>
+<div class="lab-card">
+<i class="fa fa-tint"></i>
+<h3>Haematology</h3>
+<p>Complete blood count, coagulation studies, and specialized haematological investigations to evaluate overall health and detect blood disorders.</p>
+</div>
+<div class="lab-card">
+<i class="fa fa-shield"></i>
+<h3>Immunology</h3>
+<p>Advanced immunological testing including C-reactive protein, thyroid function, and hormone assays for diagnosing infections and autoimmune conditions.</p>
+</div>
+<div class="lab-card">
+<i class="fa fa-microscope"></i>
+<h3>Microbiology</h3>
+<p>Culture sensitivity tests, bacterial identification, and antibiotic susceptibility testing to guide targeted treatment decisions.</p>
+</div>
+<div class="lab-card">
+<i class="fa fa-stethoscope"></i>
+<h3>Pathology</h3>
+<p>Histopathology and cytology services for tissue biopsy analysis, Pap smears, and comprehensive anatomical pathology reporting.</p>
+</div>
+<div class="lab-card">
+<i class="fa fa-x-ray"></i>
+<h3>Radiology & Imaging</h3>
+<p>Digital X-ray, ultrasound, and other imaging modalities to support accurate diagnosis across all medical specialities.</p>
+</div>
+</div>
+</section>
 
+<!--GENERAL TREATMENT-->
+<section id="general-treatment" class="treatment-services">
+<h1 class="section-title">General Treatment</h1>
+<p class="section-subtitle">Comprehensive medical care across multiple specialities under one roof</p>
+<div class="lab-cards">
+<div class="treat-card">
+<i class="fa fa-user-md"></i>
+<h3>General Medicine</h3>
+<p>Expert diagnosis and management of common medical conditions with personalized treatment plans for patients of all ages.</p>
+</div>
+<div class="treat-card">
+<i class="fa fa-wheelchair"></i>
+<h3>Orthopedics</h3>
+<p>Specialized care for bone, joint, and muscle conditions including fractures, arthritis, and sports injuries with advanced treatment options.</p>
+</div>
+<div class="treat-card">
+<i class="fa fa-heartbeat"></i>
+<h3>Cardiology</h3>
+<p>Comprehensive cardiac care including ECG, echocardiography, and management of heart conditions with preventive cardiology services.</p>
+</div>
+<div class="treat-card">
+<i class="fa fa-child"></i>
+<h3>Pediatric</h3>
+<p>Dedicated healthcare for infants, children, and adolescents covering growth monitoring, vaccinations, and treatment of childhood illnesses.</p>
+</div>
+<div class="treat-card">
+<i class="fa fa-phone-square"></i>
+<h3>ENT</h3>
+<p>Diagnosis and treatment of ear, nose, and throat disorders including hearing assessments, sinus treatments, and surgical interventions.</p>
+</div>
+<div class="treat-card">
+<i class="fa fa-hospital-o"></i>
+<h3>Pharmacy</h3>
+<p>Well-stocked pharmacy providing prescribed medications with expert pharmaceutical counseling and round-the-clock availability.</p>
+</div>
+</div>
+</section>
 
 <!--SECTION4-->
 <section class="section4">
@@ -196,8 +270,8 @@
 </div>
 
 <div id="myModal" class="modal">
-<span class="close cursor" onclick="closeModal()">&times;</span>
 <div class="modal-content">
+<span class="close cursor" onclick="closeModal()">&times;</span>
 
 <div class="mySlides">
 <div class="numbertext">1 / 7</div>
@@ -294,6 +368,7 @@
 </div>
 <div class="column">
 <a class="footer_title">Follow Us</a>
+<span class="footer-brand-inline"><strong>UNICUS DIAGNOSTICS</strong></span>
 <a href="https://www.facebook.com/unicusdiagnostics" target="_blank" title="Facebook" style="font-size:24px;margin-right:10px;"><i class="fa fa-facebook"></i></a>
 <a href="https://www.instagram.com/unicusdiagnostics/" target="_blank" title="Instagram" style="font-size:24px;"><i class="fa fa-instagram"></i></a>
 </div>

@@ -293,7 +293,7 @@ margin-left: auto;
 	color: #fff !important;
 	border-radius: 25px;
 	font-weight: 600;
-	padding: 14px 20px !important;
+	padding: 8px 18px !important;
 }
 
 .highlight-link:hover {
@@ -306,7 +306,7 @@ margin-left: auto;
 	color: #fff !important;
 	border-radius: 25px;
 	font-weight: 600;
-	padding: 14px 20px !important;
+	padding: 8px 18px !important;
 	margin-left:10px;
 }
 
@@ -315,7 +315,8 @@ margin-left: auto;
 	color: #fff !important;
 }
 
-.topnav .icon {
+.topnav .icon,
+.mobile-menu-icon {
 display: none;
 outline:none !important;
 }
@@ -652,7 +653,7 @@ background:rgba(255,255,255,0.9);
 }
 
 .section3 .cards .card section{
-padding:1rem;
+padding:1.2rem 1rem 1.2rem 3rem;
 }
 
 .section3 .cards .card section h4{
@@ -744,12 +745,18 @@ max-width: 1200px;
 
 /* The Close Button */
 .section4 .close {
-color: white;
-position: absolute;
-top: 10px;
-right: 25px;
-font-size: 35px;
+color: #fff;
+position: fixed;
+top: 15px;
+right: 30px;
+font-size: 40px;
 font-weight: bold;
+z-index: 9999;
+cursor: pointer;
+line-height: 1;
+}
+.section4 .close:hover {
+color: #ccc;
 }
 
 .close:hover,
@@ -1340,6 +1347,9 @@ footer .column:nth-child(4) a:not(:first-child){
 margin:5px;
 display:inline-block
 }
+.footer-brand-inline{
+display:none;
+}
 
 footer .column:nth-child(1) a:nth-child(3),footer .column:nth-child(1) a:nth-child(4),footer .column:nth-child(1) a:nth-child(5){
 display:inline-block;
@@ -1418,7 +1428,7 @@ overflow:auto;
 .booking-modal-content{
 	background:#fff;
 margin:5% auto;
-padding:40px 30px;
+padding:40px 30px 10px;
 border-radius:12px;
 width:90%;
 max-width:750px;
@@ -1546,7 +1556,82 @@ box-sizing:border-box;
     The banner/logo above it still shows.
   */
   .topnav {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: -52%;
+    width: 50%;
+    max-width: 360px;
+    height: 100vh;
+    background: #1E3A5F;
+    padding-top: 90px;
+    box-shadow: -2px 0 12px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    z-index: 999;
+  }
+  .topnav.responsive {
+    right: 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    align-items: stretch;
+  }
+  .topnav a {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 12px 20px;
+    background: none;
+    margin: 3px 12px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    gap: 12px;
+    white-space: nowrap;
+  }
+  .topnav .nav-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0;
+    flex-shrink: 0;
+    filter: brightness(0) invert(1);
+  }
+  .topnav .active {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+  }
+  .topnav .highlight-link .nav-icon,
+  .topnav .download-btn .nav-icon {
+    filter: brightness(0) invert(60%) sepia(55%) saturate(450%) hue-rotate(80deg);
+  }
+  .topnav .highlight-link,
+  .topnav .download-btn {
+    margin-left: 12px;
+    margin-right: 12px;
+    background: none;
+    padding: 12px 20px !important;
+    color: #fff !important;
+  }
+  .topnav .highlight-link:hover .nav-icon,
+  .topnav .download-btn:hover .nav-icon {
+    filter: brightness(0) invert(60%) sepia(55%) saturate(450%) hue-rotate(80deg);
+  }
+  .nav-overlay {
     display: none !important;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+    position: fixed;
+    top: 48px;
+    right: 16px;
+    font-size: 26px;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 1000;
+    line-height: 1;
   }
 
   /*
@@ -1755,7 +1840,7 @@ box-sizing:border-box;
   .booking-modal-content {
     width: 94%;
     max-width: 94%;
-    padding: 20px 16px;
+    padding: 20px 16px 0;
     margin: 15% auto;
     border-radius: 16px;
   }
@@ -1820,12 +1905,18 @@ box-sizing:border-box;
     width: 94%;
     padding: 0 3%;
   }
+  .about-content {
+    text-align: left;
+  }
   .about-content h1 {
     font-size: 1.3em;
   }
   .about-content p {
     letter-spacing: 0.04em;
     font-size: 0.93em;
+  }
+  .doctor-card {
+    text-align: left;
   }
 
 
@@ -1846,16 +1937,21 @@ box-sizing:border-box;
     margin: 12px auto;
     max-width: 100%;
   }
+  .section2 .cards .card {
+    text-align: left;
+  }
   .section2 .cards .card .fa {
     font-size: 2.2em;
   }
   .section2 .cards .card h1 {
     font-size: 1.3em;
     margin: 8px 0;
+    text-align: left;
   }
   .section2 .cards .card p {
     font-size: 0.93em;
     letter-spacing: 0.04em;
+    text-align: left;
   }
 
 
@@ -1948,14 +2044,16 @@ box-sizing:border-box;
     right: auto;
     width: 90%;
     margin: 0 auto 20px;
-    text-align: center;
+    text-align: left;
     order: 1;
   }
   .section3 .content h1 {
     font-size: 1.8em;
+    text-align: left;
   }
   .section3 .content p {
     font-size: 1.1em;
+    text-align: left;
   }
 
 
@@ -1985,17 +2083,40 @@ box-sizing:border-box;
 
   /*=========================================
     GALLERY LIGHTBOX - PHONE OVERRIDES
-    Move close button above the image.
+    Minimize padding so image fills screen.
   =========================================*/
   .section4 .modal {
-    padding-top: 130px;
+    padding-top: 5px;
   }
   .section4 .close {
     position: fixed;
-    top: 14px;
-    right: 16px;
+    top: 10px;
+    right: 14px;
     font-size: 32px;
   }
+  .section4 .modal-content {
+    width: 100%;
+    max-width: 100%;
+  }
+  .mySlides img {
+    height: 96dvh;
+  }
+
+  /*=========================================
+    FOOTER - PHONE OVERRIDES
+    Show UNICUS DIAGNOSTICS inline with social icons.
+  =========================================*/
+  footer .column:nth-child(1) a:nth-child(2) strong {
+    display: none;
+  }
+  .footer-brand-inline {
+    display: inline;
+    font-size: 0.9em;
+    color: gray;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
 
 }
 

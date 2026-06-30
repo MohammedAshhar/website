@@ -267,12 +267,18 @@ align-items: center;
 background-color: #1E3A5F;
 }
 
+@media (min-width: 821px) {
+.topnav a:first-child {
+margin-left: auto;
+}
+}
+
 .topnav a {
 display: inline-flex;
 align-items: center;
 color: #f2f2f2;
 text-align: center;
-padding: 14px 28px;
+padding: 16px 32px;
 text-decoration: none;
 font-size: 17px;
 }
@@ -285,7 +291,6 @@ filter: brightness(0) invert(1);
 
 .active {
 color: #f1c40f;
-margin-left: auto;
 }
 
 .highlight-link {
@@ -1302,14 +1307,12 @@ flex:1 1 100%;
 
 /*FOOTER*/
 .footer_image{
-width:100%;
-position:relative;
-top:20px;
+display:none;
 }
 
 footer{
 width:100%;
-background-color:#ecf1fa;
+background-color:#1E3A5F;
 padding-top:30px;
 font-family: 'Merriweather', serif;
 }
@@ -1319,11 +1322,11 @@ width:17%;
 display:inline-block;
 vertical-align:top;
 padding:10px;
-background:#ecf1fa;
+background:#1E3A5F;
 }
 
 footer .column .footer_title{
-color:#1E1E1E;
+color:#ffffff;
 font-size:1em;
 font-weight:700;
 cursor:default;
@@ -1332,7 +1335,7 @@ cursor:default;
 footer .column a{
 text-decoration:none;
 display:block;
-color:gray;
+color:rgba(255,255,255,0.65);
 font-size:0.9em;
 padding:5px 0;
 font-weight:400;
@@ -1340,7 +1343,7 @@ transition:0.5s;
 }
 
 footer .column:not(:first-child) a:hover{
-color:#000;
+color:#ffffff;
 }
 
 footer .column:nth-child(4) a:not(:first-child){
@@ -1355,7 +1358,7 @@ footer .column:nth-child(1) a:nth-child(3),footer .column:nth-child(1) a:nth-chi
 display:inline-block;
 margin:10px;
 font-size:1.3em;
-background:#fff;
+background:rgba(255,255,255,0.12);
 width:35px;
 height:35px;
 text-align:Center;
@@ -1364,24 +1367,25 @@ padding:5px;
 }
 
 footer .column:nth-child(1) .fa-facebook{
-color:#3B5998;
+color:#ffffff;
 }
 
 footer .column:nth-child(1) .fa-instagram{
-color:#d62977;
+color:#ffffff;
 }
 
 footer .column:nth-child(1) .fa-twitter{
-color:#3399ff;
+color:#ffffff;
 }
 
 .sub-footer{
-background:#d4e4fa;
+background:#1E3A5F;
 width:100%;
 padding:5px 0;
 text-align:center;
-color:#0f8ad0;
+color:rgba(255,255,255,0.5);
 font-size:12px;
+border-top:1px solid rgba(255,255,255,0.08);
 }
 
 @media (max-width:1100px){
@@ -1452,6 +1456,7 @@ display:block;
 width:380px;
 height:500px;
 object-fit:cover;
+object-position:center top;
 border-radius:8px;
 }
 .booking-close{
@@ -1493,6 +1498,8 @@ box-sizing:border-box;
 .booking-modal-content input:focus,.booking-modal-content select:focus,.booking-modal-content textarea:focus{
 	border-color:#167ce9;
 }
+
+
 
 
 /*=========================================
@@ -1840,7 +1847,7 @@ box-sizing:border-box;
   .booking-modal-content {
     width: 94%;
     max-width: 94%;
-    padding: 20px 16px 0;
+    padding: 35px 16px 0;
     margin: 15% auto;
     border-radius: 16px;
   }
@@ -1858,9 +1865,9 @@ box-sizing:border-box;
   }
   .booking-doctor-img {
     width: 100%;
-    height: auto;
-    max-height: 160px;
+    height: 250px;
     object-fit: cover;
+    object-position: center top;
     border-radius: 8px;
   }
 
@@ -2112,7 +2119,7 @@ box-sizing:border-box;
   .footer-brand-inline {
     display: inline;
     font-size: 0.9em;
-    color: gray;
+    color: rgba(255,255,255,0.65);
     margin-right: 10px;
     vertical-align: middle;
   }

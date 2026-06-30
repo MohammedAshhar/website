@@ -1,9 +1,51 @@
 import asyncio
+import importlib.util
+import os
+import sys
+import types
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 
+# Patch cassandra.cluster to support Python 3.12+ (asyncore removed).
+# The module-level connection detection doesn't include AsyncioConnection,
+# so we add it by loading the .py source instead of the compiled .pyd.
+def _patch_cassandra_cluster():
+    if 'cassandra.cluster' in sys.modules:
+        return
+    pkg_dir = os.path.dirname(importlib.util.find_spec('cassandra').origin)
+    py_path = os.path.join(pkg_dir, 'cluster.py')
+    with open(py_path, 'r', encoding='utf-8') as f:
+        source = f.read()
+
+    patch = """
+def _try_asyncio_import():
+    try:
+        from cassandra.io.asyncioreactor import AsyncioConnection
+        return (AsyncioConnection, None)
+    except Exception as e:
+        return (None, e)
+
+"""
+    old_line = "conn_fns = (_try_gevent_import, _try_eventlet_import, _try_libev_import, _try_asyncore_import)"
+    new_line = "conn_fns = (_try_gevent_import, _try_eventlet_import, _try_libev_import, _try_asyncore_import, _try_asyncio_import)"
+    source = source.replace(old_line, new_line)
+    source = source.replace(
+        "from cassandra.pool import (Host, _ReconnectionHandler, _HostReconnectionHandler,",
+        patch + "from cassandra.pool import (Host, _ReconnectionHandler, _HostReconnectionHandler,"
+    )
+
+    module = types.ModuleType('cassandra.cluster')
+    module.__file__ = py_path
+    module.__package__ = 'cassandra'
+    module.__path__ = []
+    module.__name__ = 'cassandra.cluster'
+    # Preserve the compiled module's instance if already loaded elsewhere
+    sys.modules['cassandra.cluster'] = module
+    exec(compile(source, py_path, 'exec'), module.__dict__)
+
+_patch_cassandra_cluster()
 from cassandra.cluster import Cluster
 from cassandra.query import PreparedStatement
 

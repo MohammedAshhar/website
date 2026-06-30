@@ -13,6 +13,13 @@
       "phone": "9948",
       "address": "awdaw",
       "created_at": "2026-06-29T13:11:27.377Z"
+    },
+    {
+      "patient_id": "5de2-e6db-1e17",
+      "name": "mod",
+      "phone": "123456",
+      "address": "mla",
+      "created_at": "2026-06-30T06:52:26.678022"
     }
   ],
   "bookings": [
@@ -45,6 +52,36 @@
       "collection_address": "awd",
       "status": "confirmed",
       "created_at": "2026-06-29T13:24:09.020Z"
+    },
+    {
+      "booking_id": "7ffe-cf35-55cd",
+      "patient_id": "5de2-e6db-1e17",
+      "patient_name": "mod",
+      "patient_phone": "123456",
+      "test_name": "Creatinine Test",
+      "collection_address": "mla",
+      "status": "confirmed",
+      "created_at": "2026-06-30T06:52:26.678022"
+    },
+    {
+      "booking_id": "540d-441d-fb33",
+      "patient_id": "5de2-e6db-1e17",
+      "patient_name": "mod",
+      "patient_phone": "123456",
+      "test_name": "C Reactive Protein Test",
+      "collection_address": "mla",
+      "status": "confirmed",
+      "created_at": "2026-06-30T06:52:33.617718"
+    },
+    {
+      "booking_id": "d49b-6e83-1eca",
+      "patient_id": "5de2-e6db-1e17",
+      "patient_name": "mod",
+      "patient_phone": "123456",
+      "test_name": "Blood Sugar",
+      "collection_address": "mla",
+      "status": "confirmed",
+      "created_at": "2026-06-30T06:52:37.669046"
     }
   ],
   "reports": [
@@ -55,6 +92,30 @@
       "test_name": "Creatinine Test",
       "results": "Test: Creatinine Test\nResult: Normal\nReference Range: As per clinical correlation\nRemarks: No significant abnormality detected.",
       "generated_at": "2026-06-29T11:18:39.813187"
+    },
+    {
+      "report_id": "573a-3e02-a5a5",
+      "booking_id": "7ffe-cf35-55cd",
+      "patient_id": "5de2-e6db-1e17",
+      "test_name": "Creatinine Test",
+      "results": "Test: Creatinine Test\nResult: Normal\nReference Range: As per clinical correlation\nRemarks: No significant abnormality detected.",
+      "generated_at": "2026-06-30T06:52:26.678022"
+    },
+    {
+      "report_id": "8073-20c1-d386",
+      "booking_id": "540d-441d-fb33",
+      "patient_id": "5de2-e6db-1e17",
+      "test_name": "C Reactive Protein Test",
+      "results": "Test: C Reactive Protein Test\nResult: Normal\nReference Range: As per clinical correlation\nRemarks: No significant abnormality detected.",
+      "generated_at": "2026-06-30T06:52:33.617718"
+    },
+    {
+      "report_id": "e46d-b5dc-0473",
+      "booking_id": "d49b-6e83-1eca",
+      "patient_id": "5de2-e6db-1e17",
+      "test_name": "Blood Sugar",
+      "results": "Test: Blood Sugar\nResult: Normal\nReference Range: As per clinical correlation\nRemarks: No significant abnormality detected.",
+      "generated_at": "2026-06-30T06:52:37.669046"
     }
   ],
   "doctors": [
@@ -85,7 +146,7 @@
       "test_id": "5cc7-c23f-833b",
       "name": "CBC Test",
       "price": 400,
-      "description": "Complete Blood Count — evaluates overall health and detects disorders.",
+      "description": "Complete Blood Count \u00e2\u20ac\u201d evaluates overall health and detects disorders.",
       "category": "Pathology"
     },
     {

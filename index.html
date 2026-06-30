@@ -54,7 +54,7 @@
 </div>
 <a href="javascript:void(0);" class="mobile-menu-icon" onclick="myFunction()">&#9776;</a>
 <div class="topnav" id="myTopnav">
-<a href="index.html" class="active"><img src="images/home icon.png" class="nav-icon"> Home</a>
+<a href="index.html"><img src="images/home icon.png" class="nav-icon"> Home</a>
 <a href="specialities.html"><img src="images/specialities icon.png" class="nav-icon"> Specialities</a>
 <a href="appointments.html" class="highlight-link"><img src="images/booking icon.png" class="nav-icon"> Book a Test</a>
 <a href="downloaded%20reports/index.html" class="download-btn"><img src="images/download icon.png" class="nav-icon"> Download Report</a>
@@ -163,7 +163,7 @@
 
 <!--LABORATORY SERVICES-->
 <section id="lab-services" class="lab-services">
-<h1 class="section-title">Our Laboratory Services</h1>
+<h1 class="section-title"><i class="fa fa-flask"></i> Our Laboratory Services</h1>
 <p class="section-subtitle">State-of-the-art diagnostic services with accurate and timely results</p>
 <div class="lab-cards">
 <div class="lab-card">
@@ -182,8 +182,8 @@
 <p>Advanced immunological testing including C-reactive protein, thyroid function, and hormone assays for diagnosing infections and autoimmune conditions.</p>
 </div>
 <div class="lab-card">
-<i class="fa fa-microscope"></i>
-<h3>Microbiology</h3>
+    <i class="fa fa-bug"></i>
+    <h3>Microbiology</h3>
 <p>Culture sensitivity tests, bacterial identification, and antibiotic susceptibility testing to guide targeted treatment decisions.</p>
 </div>
 <div class="lab-card">
@@ -192,8 +192,8 @@
 <p>Histopathology and cytology services for tissue biopsy analysis, Pap smears, and comprehensive anatomical pathology reporting.</p>
 </div>
 <div class="lab-card">
-<i class="fa fa-x-ray"></i>
-<h3>Radiology & Imaging</h3>
+    <i class="fa fa-heartbeat"></i>
+    <h3>Radiology & Imaging</h3>
 <p>Digital X-ray, ultrasound, and other imaging modalities to support accurate diagnosis across all medical specialities.</p>
 </div>
 </div>
@@ -332,12 +332,8 @@
 <form id="bookingFormModal">
 <input type="text" name="fname" placeholder="Full Name" maxlength="60" required />
 <input type="tel" name="phone" placeholder="Phone" maxlength="15" required />
-<select name="test" required>
+<select name="test" id="testSelect" required>
 <option value="">Select Test</option>
-<option value="Creatinine Test">Creatinine Test</option>
-<option value="CBC Test">CBC Test</option>
-<option value="C Reactive Protein Test">C Reactive Protein Test</option>
-<option value="Blood Sugar">Blood Sugar</option>
 </select>
 <textarea name="address" placeholder="Home Collection Address" rows="3" required></textarea>
 <button type="submit" class="btn2" style="width:100%;">BOOK A TEST</button>
@@ -352,7 +348,6 @@
 </div>
 
 <!--FOOTER-->
-<img src="https://i.ibb.co/ZLHbWJz/footer.png" class="footer_image">
 <footer>
 <div class="column">
 <a class="footer_title">Our Address</a>
@@ -374,7 +369,7 @@
 </div>
 
 <div class="sub-footer">
-© CopyRights 2021 Unicus Diagnostics || All rights reserved
+&copy; CopyRights 2021 Unicus Diagnostics || All rights reserved
 </div>
 </footer>
 
@@ -393,7 +388,7 @@
 <div class="mobile-active-pill" id="mobileActivePill"></div>
 
 <!--HOME button (active on this page)-->
-<button class="mobile-nav-btn active" data-href="index.html">
+<button class="mobile-nav-btn" data-href="index.html">
 <span class="btn-content">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
 <span>Home</span>
@@ -431,6 +426,17 @@
 <!--JAVASCRIPT-->
 <script src="script.js"></script>
 <script>
+function escapeHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function loadTestOptions() {
+  fetch('/api/tests').then(function(r) { return r.json(); }).then(function(tests) {
+    var sel = document.getElementById('testSelect');
+    sel.innerHTML = '<option value="">Select Test</option>';
+    tests.forEach(function(t) {
+      sel.innerHTML += '<option value="' + escapeHtml(t.name) + '">' + escapeHtml(t.name) + ' — ₹' + escapeHtml(String(t.price)) + '</option>';
+    });
+  });
+}
+loadTestOptions();
 function openBookingModal() {
 document.getElementById('bookingModal').style.display = 'block';
 document.body.style.overflow = 'hidden';

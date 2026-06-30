@@ -54,7 +54,7 @@
 </div>
 <a href="javascript:void(0);" class="mobile-menu-icon" onclick="myFunction()">&#9776;</a>
 <div class="topnav" id="myTopnav">
-<a href="index.html" class="active"><img src="images/home icon.png" class="nav-icon"> Home</a>
+<a href="index.html"><img src="images/home icon.png" class="nav-icon"> Home</a>
 <a href="specialities.html"><img src="images/specialities icon.png" class="nav-icon"> Specialities</a>
 <a href="appointments.html" class="highlight-link"><img src="images/booking icon.png" class="nav-icon"> Book a Test</a>
 <a href="downloaded%20reports/index.html" class="download-btn"><img src="images/download icon.png" class="nav-icon"> Download Report</a>
@@ -71,12 +71,8 @@
 <form id="bookingForm">
 <input type="text" name="fname" placeholder="Full Name" maxlength="60" required />
 <input type="tel" name="phone" placeholder="Phone" maxlength="15" required />
-<select name="test" required>
+<select name="test" id="testSelect" required>
 <option value="">Select Test</option>
-<option value="Creatinine Test">Creatinine Test</option>
-<option value="CBC Test">CBC Test</option>
-<option value="C Reactive Protein Test">C Reactive Protein Test</option>
-<option value="Blood Sugar">Blood Sugar</option>
 </select>
 <textarea name="address" placeholder="Home Collection Address" rows="3" required></textarea>
 <button type="submit" class="btn2" style="width:100%;">BOOK A TEST</button>
@@ -86,7 +82,6 @@
 </div>
 
 <!--FOOTER-->
-<img src="https://i.ibb.co/ZLHbWJz/footer.png" class="footer_image">
 <footer>
 <div class="column">
 <a class="footer_title">Our Address</a>
@@ -108,7 +103,7 @@
 </div>
 
 <div class="sub-footer">
-© CopyRights 2021 Unicus Diagnostics || All rights reserved
+&copy; CopyRights 2021 Unicus Diagnostics || All rights reserved
 </div>
 </footer>
 
@@ -135,7 +130,7 @@
 </button>
 
 <!--BOOK A TEST button (active on this page)-->
-<button class="mobile-nav-btn active" data-href="appointments.html">
+<button class="mobile-nav-btn" data-href="appointments.html">
 <span class="btn-content">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
 <span>Book a Test</span>
@@ -165,6 +160,17 @@
 <!--JAVASCRIPT-->
 <script src="script.js"></script>
 <script>
+function escapeHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function loadTestOptions() {
+  fetch('/api/tests').then(function(r) { return r.json(); }).then(function(tests) {
+    var sel = document.getElementById('testSelect');
+    sel.innerHTML = '<option value="">Select Test</option>';
+    tests.forEach(function(t) {
+      sel.innerHTML += '<option value="' + escapeHtml(t.name) + '">' + escapeHtml(t.name) + ' — ₹' + escapeHtml(String(t.price)) + '</option>';
+    });
+  });
+}
+loadTestOptions();
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
 e.preventDefault();
 var btn = this.querySelector('button');

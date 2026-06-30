@@ -11,6 +11,46 @@ setTimeout(function() { splash.style.display = 'none'; }, 500);
 }
 });
 
+//==========================================
+// DYNAMIC ACTIVE NAV HIGHLIGHTING
+// Automatically highlights the current page
+// in both desktop and mobile navigation.
+//==========================================
+function highlightActiveNav() {
+  var path = decodeURIComponent(window.location.pathname);
+  if (path.charAt(0) === '/') path = path.substring(1);
+
+  // Desktop topnav
+  var nav = document.getElementById('myTopnav');
+  if (nav) {
+    var links = nav.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+      var href = links[i].getAttribute('href');
+      if (href && href !== 'javascript:void(0);') {
+        links[i].classList.remove('active');
+        href = decodeURIComponent(href);
+        if (path === href || path.indexOf(href.replace(/\.html$/, '') + '/') === 0) {
+          links[i].classList.add('active');
+        }
+      }
+    }
+  }
+
+  // Mobile bottom nav
+  var navBtns = document.querySelectorAll('.mobile-nav-btn');
+  for (var i = 0; i < navBtns.length; i++) {
+    var dataHref = navBtns[i].getAttribute('data-href');
+    navBtns[i].classList.remove('active');
+    if (dataHref) {
+      var norm = decodeURIComponent(dataHref.indexOf('../') === 0 ? dataHref.substring(3) : dataHref);
+      if (path === norm || path.indexOf(norm.replace(/\.html$/, '') + '/') === 0) {
+        navBtns[i].classList.add('active');
+      }
+    }
+  }
+}
+highlightActiveNav();
+
 //NAVIGATION
 function myFunction() {
 var x = document.getElementById("myTopnav");

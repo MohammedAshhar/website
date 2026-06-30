@@ -242,80 +242,133 @@
 <div class="title_header">
 <h1>Our Gallery Portfolio</h1>
 </div>
-<div class="row">
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(1)" class="hover-shadow cursor">
-</div>
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(2)" class="hover-shadow cursor">
-</div>
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(3)" class="hover-shadow cursor">
-</div>
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(4)" class="hover-shadow cursor">
-</div>
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(5)" class="hover-shadow cursor">
-</div>
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(6)" class="hover-shadow cursor">
-</div>
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(7)" class="hover-shadow cursor">
-</div>
-<div class="column">
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" style="width:100%" onclick="openModal();currentSlide(8)" class="hover-shadow cursor">
-</div>
-</div>
+<div class="row" id="galleryGrid"></div>
 
 <div id="myModal" class="modal">
 <div class="modal-content">
 <span class="close cursor" onclick="closeModal()">&times;</span>
-
-<div class="mySlides">
-<div class="numbertext">1 / 7</div>
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" class="animate" style="width:100%">
-</div>
-
-<div class="mySlides">
-<div class="numbertext">2 / 7</div>
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" class="animate" style="width:100%">
-</div>
-
-<div class="mySlides">
-<div class="numbertext">3 / 7</div>
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" class="animate" style="width:100%">
-</div>
-
-<div class="mySlides">
-<div class="numbertext">4 / 7</div>
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" class="animate" style="width:100%">
-</div>
-
-<div class="mySlides">
-<div class="numbertext">5 / 7</div>
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" class="animate" style="width:100%">
-</div>
-
-<div class="mySlides">
-<div class="numbertext">6 / 7</div>
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" class="animate" style="width:100%">
-</div>
-
-<div class="mySlides">
-<div class="numbertext">7 / 7</div>
-<img src="https://i.ibb.co/Sft7gKp/bg2.webp" class="animate" style="width:100%">
-</div>
-
+<div id="gallerySlides"></div>
 <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
 <a class="next" onclick="plusSlides(1)">&#10095;</a>
-
 <div class="caption-container">
 <p id="caption"></p>
 </div>
 </div>
+</div>
 </section>
+
+<script>
+(function() {
+  var slideIndex = 1;
+  var images = [];
+
+  function loadGallery() {
+    fetch('/api/gallery')
+      .then(function(r) { return r.json(); })
+      .then(function(files) {
+        images = files;
+        renderThumbnails();
+        renderSlides();
+        showSlides(slideIndex);
+      })
+      .catch(function() {
+        discoverLocalImages();
+      });
+  }
+
+  function discoverLocalImages() {
+    var found = [];
+    var checkNext = function(n) {
+      var img = new Image();
+      img.onload = function() {
+        found.push('images/gallery' + n + '.png');
+        checkNext(n + 1);
+      };
+      img.onerror = function() {
+        if (found.length) {
+          images = found;
+          renderThumbnails();
+          renderSlides();
+          showSlides(slideIndex);
+        } else {
+          document.getElementById('galleryGrid').innerHTML = '<p style="color:#888;text-align:center;">No gallery images found.</p>';
+        }
+      };
+      img.src = 'images/gallery' + n + '.png';
+    };
+    checkNext(1);
+  }
+
+  function renderThumbnails() {
+    var grid = document.getElementById('galleryGrid');
+    var html = '';
+    for (var i = 0; i < images.length; i++) {
+      html += '<div class="column">';
+      html += '<img src="' + images[i] + '" style="width:100%" onclick="openModal();currentSlide(' + (i + 1) + ')" class="hover-shadow cursor">';
+      html += '</div>';
+    }
+    grid.innerHTML = html;
+  }
+
+  function renderSlides() {
+    var container = document.getElementById('gallerySlides');
+    var html = '';
+    for (var i = 0; i < images.length; i++) {
+      html += '<div class="mySlides">';
+      html += '<div class="numbertext">' + (i + 1) + ' / ' + images.length + '</div>';
+      html += '<img src="' + images[i] + '" class="animate" style="width:100%">';
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  }
+
+  window.openModal = function() {
+    document.getElementById("myModal").style.display = "block";
+  };
+
+  window.closeModal = function() {
+    document.getElementById("myModal").style.display = "none";
+  };
+
+  window.plusSlides = function(n) {
+    showSlides(slideIndex += n);
+  };
+
+  window.currentSlide = function(n) {
+    showSlides(slideIndex = n);
+  };
+
+  window.showSlides = function(n) {
+    var slides = document.getElementsByClassName("mySlides");
+    var captionText = document.getElementById("caption");
+    if (!slides.length) return;
+    if (n > slides.length) { slideIndex = 1; }
+    if (n < 1) { slideIndex = slides.length; }
+    for (var i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+    }
+    slides[slideIndex - 1].style.display = "block";
+    if (captionText) {
+      captionText.innerHTML = images[slideIndex - 1] || '';
+    }
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var m = document.getElementById('myModal');
+      if (m && m.style.display === 'block') closeModal();
+    }
+    if (e.key === 'ArrowLeft') plusSlides(-1);
+    if (e.key === 'ArrowRight') plusSlides(1);
+  });
+
+  document.getElementById('myModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  loadGallery();
+})();
+</script>
 
 
 

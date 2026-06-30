@@ -708,27 +708,35 @@ width:90%;
 margin:10vh auto;
 }
 
-.section4 .row > .column {
-padding: 0 8px;
+.section4 .row {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+gap: 16px;
 }
 
-.section4 .row:after {
-content: "";
-display: table;
-clear: both;
+.section4 .row > .column {
+padding: 0;
 }
 
 .section4 .column {
-float: left;
-width: 25%;
-margin:10px 0;
+margin: 0;
+overflow: hidden;
+border-radius: 8px;
+aspect-ratio: 16 / 11;
+}
+
+.section4 .column img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+display: block;
 }
 
 /* The Modal (background) */
 .section4 .modal {
 display: none;
 position: fixed;
-z-index: 1;
+z-index: 9998;
 padding-top: 100px;
 left: 0;
 top: 0;
@@ -774,10 +782,15 @@ cursor: pointer;
 .mySlides {
 display: none;
 background-color:#000;
+text-align: center;
 }
 
 .mySlides img{
-height:80vh;
+max-width: 100%;
+max-height: 90vh;
+width: auto;
+height: auto;
+object-fit: contain;
 }
 
 .cursor {
@@ -932,11 +945,6 @@ font-size:0.9em;
 letter-spacing:0.08em;
 line-height:1.4em;
 padding:0 1rem;
-}
-.section4 .column {
-float: left;
-width: 50%;
-margin:10px 0;
 }
 }
 
@@ -2106,7 +2114,11 @@ box-sizing:border-box;
     max-width: 100%;
   }
   .mySlides img {
-    height: 96dvh;
+    max-width: 100%;
+    max-height: 96dvh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
   /*=========================================

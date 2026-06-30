@@ -199,6 +199,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     return send(404, {"error": "Report not found for this booking"})
                 return send(200, report)
 
+            # GET /api/gallery — list images in the images/ folder
+            elif path == "/api/gallery" and method == "GET":
+                img_dir = os.path.join(BASE_DIR, "images")
+                exts = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
+                files = []
+                try:
+                    for f in sorted(os.listdir(img_dir)):
+                        ext = os.path.splitext(f)[1].lower()
+                        if ext in exts and f.lower().startswith("gallery"):
+                            files.append("images/" + f)
+                except OSError:
+                    pass
+                return send(200, files)
+
             # POST /api/seed
             elif path == "/api/seed" and method == "POST":
                 seed()

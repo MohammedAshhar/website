@@ -36,6 +36,7 @@
     <a href="patients.html">Patients</a>
     <a href="tests.html">Tests</a>
     <a href="doctors.html" class="active">Doctors</a>
+    <a href="privileges.html" id="privilegesLink">Privileges</a>
     <div class="sidebar-spacer"></div>
     <a href="#" class="sidebar-logout" onclick="logout()">Logout</a>
 </nav>
@@ -84,6 +85,8 @@ var ROLE = localStorage.getItem('admin_role');
 document.getElementById('userDisplay').textContent = USERNAME || 'Admin';
 var brandRole = document.getElementById('brandRole');
 if (brandRole) brandRole.textContent = ROLE === 'owner' ? 'Owner' : 'Admin';
+var privilegesLink = document.getElementById('privilegesLink');
+if (privilegesLink && ROLE !== 'owner') privilegesLink.style.display = 'none';
 
 function loadDoctors() {
     fetch('/api/doctors').then(function(r) { return r.json(); }).then(function(doctors) {

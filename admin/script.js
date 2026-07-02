@@ -32,7 +32,9 @@ function api(path, method, body) {
             window.location.href = '/admin/login.html';
             throw new Error('Unauthorized');
         }
-        return r.json().then(function(data) {
+        return r.text().then(function(text) {
+            var data;
+            try { data = JSON.parse(text); } catch(e) { data = { detail: text || 'Request failed' }; }
             if (!r.ok) throw new Error(data.detail || 'Request failed');
             return data;
         });

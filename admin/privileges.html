@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Privileges - Unicus Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.privileges-container {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.role-box {
+    flex: 1;
+    min-width: 320px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+.role-box h2 {
+    margin: 0;
+    padding: 16px 20px;
+    background: #1a73e8;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+}
+.role-box.desk h2 {
+    background: #5f6368;
+}
+.permission-section {
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+}
+.permission-section h3 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #5f6368;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 0;
+}
+.toggle-row label {
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    flex: 1;
+}
+.toggle-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-left: 12px;
+    cursor: pointer;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #ccc;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+.toggle-slider::before {
+    content: "";
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+.toggle-switch input:checked + .toggle-slider {
+    background: #1a73e8;
+}
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(16px);
+}
+.privileges-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.privileges-actions button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.btn-save {
+    background: #1a73e8;
+    color: #fff;
+}
+.btn-save:hover {
+    background: #1557b0;
+}
+.btn-reset {
+    background: #fff;
+    color: #5f6368;
+    border: 1px solid #dadce0 !important;
+}
+.btn-reset:hover {
+    background: #f1f3f4;
+}
+.msg {
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    display: none;
+}
+.msg-success {
+    display: block;
+    background: #e6f4ea;
+    color: #137333;
+}
+.msg-error {
+    display: block;
+    background: #fce8e6;
+    color: #c5221f;
+}
+</style>
+</head>
+<body>
+
+<div class="admin-header">
+    <div class="brand">
+        <a href="dashboard.html" style="text-decoration:none;">Unicus Diagnostics - <span id="brandRole">Owner</span></a>
+    </div>
+    <div class="user-info">
+        <span id="userDisplay"></span>
+        <button onclick="logout()">Logout</button>
+    </div>
+</div>
+<div class="admin-layout">
+<nav class="admin-sidebar">
+    <a href="dashboard.html">Dashboard</a>
+    <div class="sidebar-section">
+        <button class="sidebar-toggle" onclick="toggleBookingsMenu(event)">Bookings ▾</button>
+        <div class="sidebar-submenu" id="bookingsMenu">
+            <a href="bookings.html">All Bookings</a>
+            <a href="bookings.html?status=pending">Incomplete</a>
+            <a href="bookings.html?status=completed">Complete</a>
+            <a href="bookings.html?status=confirmed">Pending Approval</a>
+            <a href="bookings.html?status=approved">Approved</a>
+            <a href="bookings.html?status=cancelled">Cancelled</a>
+        </div>
+    </div>
+    <a href="reports.html">Reports</a>
+    <a href="patients.html">Patients</a>
+    <a href="tests.html">Tests</a>
+    <a href="doctors.html">Doctors</a>
+    <a href="privileges.html" class="active" id="privilegesLink">Privileges</a>
+    <div class="sidebar-spacer"></div>
+    <a href="#" class="sidebar-logout" onclick="logout()">Logout</a>
+</nav>
+<div class="admin-content">
+    <h1>Privileges</h1>
+    <p style="color:#5f6368;margin-bottom:20px;">Toggle permissions ON (enabled) or OFF (disabled) for each role. Changes apply immediately after saving.</p>
+    <div class="msg" id="msg"></div>
+    <div class="privileges-actions">
+        <button class="btn-save" onclick="savePermissions()">Save Changes</button>
+        <button class="btn-reset" onclick="loadPermissions()">Reset</button>
+    </div>
+    <div class="privileges-container" id="privilegesContainer"></div>
+</div>
+</div>
+<script src="script.js"></script>
+<script>
+requireAuth();
+
+var brandRole = document.getElementById('brandRole');
+if (brandRole) brandRole.textContent = ROLE === 'owner' ? 'Owner' : ROLE.charAt(0).toUpperCase() + ROLE.slice(1);
+
+var privilegesLink = document.getElementById('privilegesLink');
+if (privilegesLink) {
+    if (ROLE !== 'owner') {
+        privilegesLink.style.display = 'none';
+        window.location.href = 'dashboard.html';
+    }
+}
+
+var PERMISSION_GROUPS = [
+    { label: 'Bookings', keys: ['create_booking', 'view_own_bookings', 'view_all_bookings', 'cancel_booking', 'edit_booking_status'] },
+    { label: 'Reports', keys: ['generate_report', 'view_reports', 'download_reports', 'delete_reports', 'view_reports_today'] },
+    { label: 'Patients', keys: ['manage_patients', 'view_patient_history'] },
+    { label: 'Tests', keys: ['manage_tests'] },
+    { label: 'Dashboard', keys: ['view_dashboard'] },
+    { label: 'Users', keys: ['manage_users', 'manage_roles'] },
+    { label: 'Collection', keys: ['update_collection_address', 'view_collection_address'] },
+];
+
+var PERMISSION_LABELS = {
+    create_booking: 'Create Booking',
+    view_own_bookings: 'View Own Bookings',
+    view_all_bookings: 'View All Bookings',
+    cancel_booking: 'Cancel Booking',
+    edit_booking_status: 'Edit Booking Status',
+    generate_report: 'Generate Report',
+    view_reports: 'View Reports',
+    download_reports: 'Download Reports',
+    delete_reports: 'Delete Reports',
+    view_reports_today: 'View Reports Today',
+    manage_patients: 'Manage Patients',
+    view_patient_history: 'View Patient History',
+    manage_tests: 'Manage Tests (Sync Prices)',
+    view_dashboard: 'View Dashboard',
+    manage_users: 'Manage Users',
+    manage_roles: 'Manage Roles',
+    update_collection_address: 'Update Collection Address',
+    view_collection_address: 'View Collection Address',
+};
+
+var permissionsData = {};
+
+function renderToggle(role, key, enabled) {
+    var id = role + '_' + key;
+    var label = PERMISSION_LABELS[key] || key.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+    return '<div class="toggle-row">' +
+        '<label for="' + id + '">' + label + '</label>' +
+        '<label for="' + id + '" class="toggle-switch">' +
+            '<input type="checkbox" id="' + id + '" ' + (enabled ? 'checked' : '') +
+                ' onchange="onToggle(\'' + role + '\',\'' + key + '\',this.checked)">' +
+            '<span class="toggle-slider"></span>' +
+        '</label>' +
+    '</div>';
+}
+
+function onToggle(role, key, enabled) {
+    if (!permissionsData[role]) permissionsData[role] = {};
+    permissionsData[role][key] = enabled;
+}
+
+function renderPermissions() {
+    var container = document.getElementById('privilegesContainer');
+    container.innerHTML = '';
+    var roles = ['admin', 'desk'];
+    roles.forEach(function(role) {
+        var box = document.createElement('div');
+        box.className = 'role-box' + (role === 'desk' ? ' desk' : '');
+        box.innerHTML = '<h2>' + role.charAt(0).toUpperCase() + role.slice(1) + '</h2>';
+        var html = '';
+        PERMISSION_GROUPS.forEach(function(group) {
+            html += '<div class="permission-section">';
+            html += '<h3>' + group.label + '</h3>';
+            group.keys.forEach(function(key) {
+                var enabled = permissionsData[role] && permissionsData[role][key] === true;
+                html += renderToggle(role, key, enabled);
+            });
+            html += '</div>';
+        });
+        box.innerHTML += html;
+        container.appendChild(box);
+    });
+}
+
+function loadPermissions() {
+    api('/permissions', 'GET').then(function(data) {
+        var permMap = data.permissions || {};
+        var roles = ['admin', 'desk'];
+        roles.forEach(function(role) {
+            if (!permissionsData[role]) permissionsData[role] = {};
+            var rolePerms = permMap[role] || {};
+            PERMISSION_GROUPS.forEach(function(group) {
+                group.keys.forEach(function(key) {
+                    if (rolePerms[key] !== undefined) {
+                        permissionsData[role][key] = rolePerms[key];
+                    } else {
+                        permissionsData[role][key] = (role === 'admin');
+                    }
+                });
+            });
+        });
+        renderPermissions();
+    }).catch(function() {
+        showMsg('Failed to load permissions', 'error');
+    });
+}
+
+function savePermissions() {
+    var toggles = [];
+    var roles = ['admin', 'desk'];
+    roles.forEach(function(role) {
+        PERMISSION_GROUPS.forEach(function(group) {
+            group.keys.forEach(function(key) {
+                var enabled = permissionsData[role] && permissionsData[role][key] === true;
+                toggles.push({ role: role, permission_key: key, enabled: enabled });
+            });
+        });
+    });
+    api('/permissions', 'PUT', { permissions: toggles }).then(function() {
+        showMsg('Permissions saved successfully', 'success');
+        loadPermissions();
+    }).catch(function() {
+        showMsg('Failed to save permissions', 'error');
+    });
+}
+
+function showMsg(text, type) {
+    var msg = document.getElementById('msg');
+    msg.textContent = text;
+    msg.className = 'msg msg-' + type;
+    setTimeout(function() { msg.className = 'msg'; }, 3000);
+}
+
+function logout() {
+    api('/logout', 'POST').then(function() {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_username');
+        localStorage.removeItem('admin_role');
+        window.location.href = 'login.html';
+    });
+}
+
+loadPermissions();
+</script>
+</body>
+</html>

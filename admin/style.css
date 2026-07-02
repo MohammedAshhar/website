@@ -484,6 +484,7 @@ body {
     max-width: 500px;
     max-height: 80vh;
     overflow-y: auto;
+    position: relative;
 }
 
 .modal-box h2 {

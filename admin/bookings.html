@@ -36,6 +36,7 @@
     <a href="patients.html">Patients</a>
     <a href="tests.html">Tests</a>
     <a href="doctors.html">Doctors</a>
+    <a href="privileges.html" id="privilegesLink">Privileges</a>
     <div class="sidebar-spacer"></div>
     <a href="#" class="sidebar-logout" onclick="logout()">Logout</a>
 </nav>
@@ -91,11 +92,16 @@
 </div>
 <div class="modal-overlay" id="reportModal">
     <div class="modal-box" style="max-width:700px;">
+        <span onclick="closeModal('reportModal')" style="position:absolute;top:10px;right:14px;cursor:pointer;font-size:22px;font-weight:700;color:#666;line-height:1;">&times;</span>
         <h2 id="reportModalTitle">Generate Report</h2>
         <input type="hidden" id="genBookingId">
         <input type="hidden" id="genTestName">
         <div id="reportFormFields"></div>
-        <div class="modal-actions">
+        <div id="reportModalResult" style="display:none;margin-top:12px;padding:12px;background:#e8f5e9;border-radius:6px;text-align:center;">
+            <p style="color:#2e7d32;font-weight:700;margin:0 0 8px 0;">PDF report generated successfully!</p>
+            <a id="reportDownloadLink" href="#" target="_blank" class="btn-success" style="display:inline-block;padding:10px 20px;border-radius:6px;color:#fff;text-decoration:none;font-weight:700;">Download Report</a>
+        </div>
+        <div class="modal-actions" id="reportModalActions">
             <button class="btn-cancel" onclick="closeModal('reportModal')">Cancel</button>
             <button class="btn-success" onclick="generateReport()">Generate PDF</button>
         </div>
@@ -103,11 +109,18 @@
 </div>
 <script src="script.js"></script>
 <script>
+
+
+
+
+
 requireAuth();
 var ROLE = localStorage.getItem('admin_role');
 document.getElementById('userDisplay').textContent = USERNAME || 'Admin';
 var brandRole = document.getElementById('brandRole');
 if (brandRole) brandRole.textContent = ROLE === 'owner' ? 'Owner' : 'Admin';
+var privilegesLink = document.getElementById('privilegesLink');
+if (privilegesLink && ROLE !== 'owner') privilegesLink.style.display = 'none';
 
 var statusLabels = {
     pending: 'Incomplete',
@@ -162,7 +175,7 @@ function loadBookings() {
                 var statusLabel = statusLabels[b.status] || b.status;
                 var statusClass = 'status-' + b.status;
                 var downloadBtn = hasPdf
-                    ? '<a href="/api/admin/reports/' + b.booking_id + '/download" target="_blank" class="btn-download" style="margin-left:4px;padding:4px 10px;border-radius:4px;color:#fff;text-decoration:none;font-size:12px;background:#2e7d32;">PDF</a>'
+                    ? '<a href="/api/report/' + b.booking_id + '/download" target="_blank" class="btn-download" style="margin-left:4px;padding:4px 10px;border-radius:4px;color:#fff;text-decoration:none;font-size:12px;background:#2e7d32;">PDF</a>'
                     : '';
                 tbody.innerHTML +=
                     '<tr data-booking-id="' + b.booking_id + '">' +
@@ -174,7 +187,9 @@ function loadBookings() {
                     '<td>' + escapeHtml(b.created_at || '').substring(0, 10) + '</td>' +
                     '<td class="actions">' +
                     '<button class="btn-edit" onclick="openStatusModal(\'' + b.booking_id + '\', \'' + b.status + '\')">Status</button>' +
-                    '<button class="btn-success" onclick="openReportModal(\'' + b.booking_id + '\', \'' + escapeHtml(b.test_name) + '\')" style="margin-left:4px;">Report</button>' +
+                    (ROLE === 'owner'
+                        ? '<button class="btn-success" onclick="openReportModal(\'' + b.booking_id + '\', \'' + escapeHtml(b.test_name) + '\')" style="margin-left:4px;">Report</button>'
+                        : '') +
                     downloadBtn +
                     '</td>' +
                     '</tr>';
@@ -196,10 +211,13 @@ function updateCounts(allBookings) {
     document.getElementById('countCancelled').textContent = '(' + counts.cancelled + ')';
 }
 
+// this refreshes the counts of bookings in each status tab by fetching the latest data from the server
+// maybe also add a notification to the owner when a new booking is made or when a booking status changes, so they can take action if needed.
 function refreshCounts() {
     api('/bookings?_=' + Date.now()).then(updateCounts);
 }
 
+// this filters the table rows based on the search input
 function filterTable() {
     var input = document.getElementById('searchInput').value.toLowerCase();
     var rows = document.querySelectorAll('#bookingsBody tr');
@@ -208,6 +226,8 @@ function filterTable() {
         row.style.display = text.indexOf(input) > -1 ? '' : 'none';
     });
 }
+// Lightbox 
+// this opens the modal to edit the status of a booking.
 
 function openStatusModal(bookingId, currentStatus) {
     document.getElementById('editBookingId').value = bookingId;
@@ -215,10 +235,16 @@ function openStatusModal(bookingId, currentStatus) {
     document.getElementById('statusModal').classList.add('show');
 }
 
+// this closes the modal with the given id
+// so what is a modal?
+//  A modal is a dialog box/popup window that is displayed on top of the current page. It is often used to capture user input or display information without navigating away from the current page. In this code, the `closeModal` function removes the 'show' class from the modal element, effectively hiding it from view.
+// Essentially a lightbox
 function closeModal(id) {
     document.getElementById(id).classList.remove('show');
 }
 
+// this saves the new status for the booking and updates the table row accordingly
+// 
 function saveStatus() {
     var bookingId = document.getElementById('editBookingId').value;
     var newStatus = document.getElementById('editStatus').value;
@@ -244,10 +270,17 @@ function saveStatus() {
     });
 }
 
+
+
+// this opens the modal to generate a PDF report for the booking, 
+// fetching the test parameters first
 function openReportModal(bookingId, testName) {
     document.getElementById('genBookingId').value = bookingId;
     document.getElementById('genTestName').value = testName;
     document.getElementById('reportModalTitle').textContent = 'Generate Report - ' + testName;
+    document.getElementById('reportFormFields').style.display = 'block';
+    document.getElementById('reportModalActions').style.display = 'flex';
+    document.getElementById('reportModalResult').style.display = 'none';
     var fieldsDiv = document.getElementById('reportFormFields');
     fieldsDiv.innerHTML = '<p class="loading">Loading parameters...</p>';
     document.getElementById('reportModal').classList.add('show');
@@ -284,12 +317,16 @@ function generateReport() {
         return;
     }
     api('/bookings/' + bookingId + '/generate-pdf', 'POST', {parameter_values: parameterValues}).then(function(result) {
-        showMessage('PDF report generated successfully. <a href="/api/admin/reports/' + bookingId + '/download" target="_blank" style="color:#fff;font-weight:bold;">Download PDF</a>');
-        closeModal('reportModal');
+        document.getElementById('reportDownloadLink').href = '/api/report/' + bookingId + '/download';
+        document.getElementById('reportFormFields').style.display = 'none';
+        document.getElementById('reportModalActions').style.display = 'none';
+        document.getElementById('reportModalResult').style.display = 'block';
+        document.getElementById('reportModalTitle').textContent = 'Report Generated';
+        showMessage('PDF report generated successfully');
         loadBookings();
     }).catch(function(err) {
         showMessage('Failed to generate PDF: ' + err.message, 'error');
-    });
+    })
 }
 
 function logout() {

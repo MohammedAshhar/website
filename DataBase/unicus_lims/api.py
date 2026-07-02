@@ -20,6 +20,8 @@ from .schemas import (
     DoctorUpdate, TestUpdate,
     AdminBookingStatusUpdate, AdminReportCreate,
     ParameterResponse, GeneratePdfRequest, PdfGeneratedResponse,
+    PermissionToggle, BulkPermissionsRequest, PermissionsResponse,
+    PERMISSION_KEYS,
 )
 from .test_params import PARAM_MAP
 from .pdf_generator import generate_report_pdf, REPORTS_DIR
@@ -73,6 +75,23 @@ def create_fastapi_app(database: Database) -> FastAPI:
             raise HTTPException(403, "Only the owner can perform this action")
         return current_admin
 
+    def require_permission(perm_key: str):
+        """
+        Factory that returns a FastAPI dependency to check whether the
+        authenticated user's role has the given permission enabled.
+        Owner always passes (bypasses permission checks entirely).
+        Usage in endpoint: _=Depends(require_permission("create_booking"))
+        """
+        def _checker(current_admin: dict = Depends(require_admin)):
+            role = current_admin.get("role", "")
+            if role == "owner":
+                return current_admin
+            perms = database.get_role_permissions(role)
+            if not perms.get(perm_key, False):
+                raise HTTPException(403, f"Permission denied: '{perm_key}' required")
+            return current_admin
+        return _checker
+
     # --- Auth endpoints ---
 
     @app.post("/api/admin/login")
@@ -96,30 +115,31 @@ def create_fastapi_app(database: Database) -> FastAPI:
     # --- Admin dashboard ---
 
     @app.get("/api/admin/dashboard")
-    def admin_dashboard(_=Depends(require_admin)):
+    def admin_dashboard(_=Depends(require_permission("view_dashboard"))):
         return AdminDashboardResponse(
             total_patients=database.get_all_patients_count(),
             total_bookings=database.get_all_bookings_count(),
             todays_bookings=database.get_todays_bookings_count(),
+            reports_today=database.get_reports_today_count(),
         )
 
     # --- Admin patient list ---
 
     @app.get("/api/admin/patients")
-    def admin_list_patients(_=Depends(require_admin)):
+    def admin_list_patients(_=Depends(require_permission("manage_patients"))):
         return database.list_all_patients()
 
     # --- Admin booking list & update ---
 
     @app.get("/api/admin/bookings")
-    def admin_list_bookings(status: str = None, _=Depends(require_admin)):
+    def admin_list_bookings(status: str = None, _=Depends(require_permission("view_all_bookings"))):
         bookings = database.list_all_bookings()
         if status:
             bookings = [b for b in bookings if b["status"] == status]
         return bookings
 
     @app.put("/api/admin/booking/{booking_id}/status")
-    def admin_update_booking_status(booking_id: str, body: AdminBookingStatusUpdate, _=Depends(require_admin)):
+    def admin_update_booking_status(booking_id: str, body: AdminBookingStatusUpdate, _=Depends(require_permission("edit_booking_status"))):
         try:
             database.update_booking_status(booking_id, body.status)
         except ValueError as e:
@@ -131,11 +151,15 @@ def create_fastapi_app(database: Database) -> FastAPI:
     # --- Admin reports ---
 
     @app.get("/api/admin/reports")
-    def admin_list_reports(_=Depends(require_admin)):
+    def admin_list_reports(_=Depends(require_permission("view_reports"))):
         return database.list_all_reports()
 
     @app.post("/api/admin/report/create")
-    def admin_create_report(body: AdminReportCreate, _=Depends(require_owner)):
+    def admin_create_report(body: AdminReportCreate, _=Depends(require_permission("generate_report"))):
+        try:
+            uuid.UUID(body.booking_id)
+        except ValueError:
+            raise HTTPException(400, "Invalid booking ID format")
         booking = database.get_booking(body.booking_id)
         if not booking:
             raise HTTPException(404, "Booking not found")
@@ -154,7 +178,7 @@ def create_fastapi_app(database: Database) -> FastAPI:
         }
 
     @app.put("/api/admin/report/{report_id}")
-    def admin_update_report(report_id: str, body: ReportCreate, _=Depends(require_owner)):
+    def admin_update_report(report_id: str, body: ReportCreate, _=Depends(require_permission("generate_report"))):
         database.update_report(report_id, body.results)
         return {"status": "ok"}
 
@@ -172,7 +196,7 @@ def create_fastapi_app(database: Database) -> FastAPI:
         raise HTTPException(404, f"Unknown test: {test_name}")
 
     @app.post("/api/admin/bookings/{booking_id}/generate-pdf")
-    def admin_generate_pdf(booking_id: str, body: GeneratePdfRequest, _=Depends(require_owner)):
+    def admin_generate_pdf(booking_id: str, body: GeneratePdfRequest, _=Depends(require_permission("generate_report"))):
         """
         Generate a PDF report for a booking using the submitted parameter values.
         1. Fetch the booking and associated report (or create one).
@@ -280,12 +304,12 @@ def create_fastapi_app(database: Database) -> FastAPI:
     # --- Admin tests ---
 
     @app.put("/api/admin/test/{test_id}")
-    def admin_update_test(test_id: str, body: TestUpdate, _=Depends(require_admin)):
+    def admin_update_test(test_id: str, body: TestUpdate, _=Depends(require_permission("manage_tests"))):
         database.update_test(test_id, body.name, body.price, body.description, body.category)
         return {"status": "ok"}
 
     @app.post("/api/admin/sync-prices")
-    def admin_sync_prices(_=Depends(require_owner)):
+    def admin_sync_prices(_=Depends(require_permission("manage_tests"))):
         """
         Sync test catalog from Google Sheets.
         1. Fetch products from the registered Google Sheet via gspread.
@@ -311,6 +335,29 @@ def create_fastapi_app(database: Database) -> FastAPI:
             )
             for t in tests
         ]
+
+    # --- Permissions (owner only) ---
+
+    @app.get("/api/admin/permissions", response_model=PermissionsResponse)
+    def admin_get_permissions(_=Depends(require_owner)):
+        """
+        Returns all permission toggles grouped by role.
+        Owner-only endpoint. Returns all stored permissions for admin and desk roles.
+        """
+        perms = database.get_all_permissions()
+        return PermissionsResponse(permissions=perms)
+
+    @app.put("/api/admin/permissions", response_model=PermissionsResponse)
+    def admin_set_permissions(body: BulkPermissionsRequest, _=Depends(require_owner)):
+        """
+        Bulk upsert permissions for one or more roles.
+        Owner-only endpoint. Accepts a list of PermissionToggle objects.
+        Each toggle specifies role, permission_key, and enabled (boolean).
+        """
+        for toggle in body.permissions:
+            database.set_role_permission(toggle.role, toggle.permission_key, toggle.enabled)
+        perms = database.get_all_permissions()
+        return PermissionsResponse(permissions=perms)
 
     # --- Patient endpoints ---
 

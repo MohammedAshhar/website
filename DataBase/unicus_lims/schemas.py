@@ -1,6 +1,27 @@
 from pydantic import BaseModel
 from typing import Optional
 
+PERMISSION_KEYS: list[str] = [
+    "create_booking",
+    "view_own_bookings",
+    "view_all_bookings",
+    "cancel_booking",
+    "edit_booking_status",
+    "generate_report",
+    "view_reports",
+    "download_reports",
+    "delete_reports",
+    "manage_patients",
+    "view_patient_history",
+    "manage_tests",
+    "view_dashboard",
+    "view_reports_today",
+    "manage_users",
+    "manage_roles",
+    "update_collection_address",
+    "view_collection_address",
+]
+
 
 class PatientCreate(BaseModel):
     name: str
@@ -113,6 +134,7 @@ class AdminDashboardResponse(BaseModel):
     total_patients: int
     total_bookings: int
     todays_bookings: int
+    reports_today: int
 
 
 class DoctorUpdate(BaseModel):
@@ -154,3 +176,17 @@ class PdfGeneratedResponse(BaseModel):
     test_name: str
     pdf_path: str
     generated_at: str
+
+
+class PermissionToggle(BaseModel):
+    role: str
+    permission_key: str
+    enabled: bool
+
+
+class BulkPermissionsRequest(BaseModel):
+    permissions: list[PermissionToggle]
+
+
+class PermissionsResponse(BaseModel):
+    permissions: dict[str, dict[str, bool]]

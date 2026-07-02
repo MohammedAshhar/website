@@ -36,6 +36,7 @@
     <a href="patients.html">Patients</a>
     <a href="tests.html">Tests</a>
     <a href="doctors.html">Doctors</a>
+    <a href="privileges.html" id="privilegesLink">Privileges</a>
     <div class="sidebar-spacer"></div>
     <a href="#" class="sidebar-logout" onclick="logout()">Logout</a>
 </nav>
@@ -83,6 +84,8 @@ var ROLE = localStorage.getItem('admin_role');
 document.getElementById('userDisplay').textContent = USERNAME || 'Admin';
 var brandRole = document.getElementById('brandRole');
 if (brandRole) brandRole.textContent = ROLE === 'owner' ? 'Owner' : 'Admin';
+var privilegesLink = document.getElementById('privilegesLink');
+if (privilegesLink && ROLE !== 'owner') privilegesLink.style.display = 'none';
 
 function loadReports() {
     api('/reports').then(function(reports) {
@@ -91,7 +94,7 @@ function loadReports() {
         reports.forEach(function(r) {
             var hasPdf = r.pdf_path && r.pdf_path.length > 0;
             var pdfCell = hasPdf
-                ? '<a href="/api/admin/reports/' + r.booking_id + '/download" target="_blank" class="btn-success" style="padding:4px 10px;border-radius:4px;color:#fff;text-decoration:none;font-size:12px;">Download</a>'
+                ? '<a href="/api/report/' + r.booking_id + '/download" target="_blank" class="btn-success" style="padding:4px 10px;border-radius:4px;color:#fff;text-decoration:none;font-size:12px;">Download</a>'
                 : '<span style="color:#999;">Not generated</span>';
             tbody.innerHTML +=
                 '<tr>' +

@@ -9,15 +9,16 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="admin-header">
-    <div class="brand">
-        <a href="dashboard.html" style="text-decoration:none;">Unicus Diagnostics - <span id="brandRole">Admin</span></a>
+
+    <div class="admin-header">
+        <div class="brand">
+            <a href="dashboard.html" style="text-decoration:none;">Unicus Diagnostics - <span id="brandRole">Admin</span></a>
+        </div>
+        <div class="user-info">
+            <span id="userDisplay"></span>
+            <button onclick="logout()">Logout</button>
+        </div>
     </div>
-    <div class="user-info">
-        <span id="userDisplay"></span>
-        <button onclick="logout()">Logout</button>
-    </div>
-</div>
 <div class="admin-layout">
 <nav class="admin-sidebar">
     <a href="dashboard.html" class="active">Dashboard</a>
@@ -36,6 +37,7 @@
     <a href="patients.html">Patients</a>
     <a href="tests.html">Tests</a>
     <a href="doctors.html">Doctors</a>
+    <a href="privileges.html" id="privilegesLink">Privileges</a>
     <div class="sidebar-spacer"></div>
     <a href="#" class="sidebar-logout" onclick="logout()">Logout</a>
 </nav>
@@ -53,6 +55,10 @@
             <div class="number" id="todaysBookings">-</div>
             <div class="label">Today's Bookings</div>
         </div>
+        <div class="dashboard-card">
+            <div class="number" id="todaysReports">-</div>
+            <div class="label">Reports Generated Today</div>
+        </div>
     </div>
 </div>
 </div>
@@ -62,12 +68,15 @@ requireAuth();
 document.getElementById('userDisplay').textContent = USERNAME || 'Admin';
 var brandRole = document.getElementById('brandRole');
 if (brandRole) brandRole.textContent = ROLE === 'owner' ? 'Owner' : 'Admin';
+var privilegesLink = document.getElementById('privilegesLink');
+if (privilegesLink && ROLE !== 'owner') privilegesLink.style.display = 'none';
 
 function loadDashboard() {
     api('/dashboard').then(function(d) {
         document.getElementById('totalPatients').textContent = d.total_patients;
         document.getElementById('totalBookings').textContent = d.total_bookings;
         document.getElementById('todaysBookings').textContent = d.todays_bookings;
+        document.getElementById('todaysReports').textContent = d.reports_today;
     });
 }
 

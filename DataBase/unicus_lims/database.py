@@ -289,6 +289,15 @@ class Database:
             ) WITH CLUSTERING ORDER BY (generated_at DESC)
         """)
 
+        self._execute("""
+            CREATE TABLE IF NOT EXISTS role_permissions (
+                role TEXT,
+                permission_key TEXT,
+                enabled boolean,
+                PRIMARY KEY (role, permission_key)
+            )
+        """)
+
         # Backwards-compatible column additions (safe if columns already exist)
         for tbl in ("reports", "reports_by_booking", "all_reports"):
             for col in ("parameter_values text", "pdf_path text"):
@@ -615,6 +624,15 @@ class Database:
             return r.count
         return 0
 
+    def get_reports_today_count(self) -> int:
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        for r in self.session.execute(
+            "SELECT COUNT(*) FROM all_reports WHERE partition = 0 AND generated_at >= %s ALLOW FILTERING",
+            (today_start,)
+        ):
+            return r.count
+        return 0
+
     def update_booking_status(self, booking_id: str, status: str):
         bid = uuid.UUID(booking_id)
         rows = self.session.execute(
@@ -683,3 +701,60 @@ class Database:
             "UPDATE reports SET results = %s WHERE report_id = %s",
             (results, rid)
         )
+
+    # --- Permission system ---
+
+    def get_role_permissions(self, role: str) -> dict:
+        """
+        Returns all permission_key -> enabled dict for a given role.
+        Example return value: {"create_booking": True, "view_own_bookings": False, ...}
+        """
+        rows = self.session.execute(
+            "SELECT permission_key, enabled FROM role_permissions WHERE role = %s", (role,)
+        )
+        return {row.permission_key: row.enabled for row in rows}
+
+    def set_role_permission(self, role: str, permission_key: str, enabled: bool):
+        """
+        Sets a single permission toggle for a given role.
+        If enabled is True, the role is granted the permission; if False, it is revoked.
+        """
+        self.session.execute(
+            "INSERT INTO role_permissions (role, permission_key, enabled) VALUES (%s, %s, %s)",
+            (role, permission_key, enabled)
+        )
+
+    def bulk_set_role_permissions(self, role: str, permissions: dict[str, bool]):
+        """
+        Bulk upserts multiple permission toggles for a given role in a single batch.
+        Parameters:
+            role: str -- the role to update (e.g. "admin", "desk")
+            permissions: dict[str, bool] -- mapping of permission_key -> enabled
+        """
+        for key, enabled in permissions.items():
+            self.set_role_permission(role, key, enabled)
+
+    def get_all_permissions(self) -> dict[str, dict[str, bool]]:
+        """
+        Returns all permissions across all roles as a nested dict.
+        Structure: {"admin": {"create_booking": True, ...}, "desk": {"create_booking": False, ...}}
+        """
+        rows = self.session.execute("SELECT role, permission_key, enabled FROM role_permissions")
+        result: dict[str, dict[str, bool]] = {}
+        for row in rows:
+            if row.role not in result:
+                result[row.role] = {}
+            result[row.role][row.permission_key] = row.enabled
+        return result
+
+    def seed_default_permissions(self, desk_role: str = "desk", admin_role: str = "admin"):
+        """
+        Seeds default permissions for desk and admin roles.
+        Desk gets all false, admin gets all true (owner controls from there).
+        Call this once on first startup after creating the desk user.
+        """
+        from .schemas import PERMISSION_KEYS
+        for role in (desk_role, admin_role):
+            for key in PERMISSION_KEYS:
+                enabled = (role == admin_role)
+                self.set_role_permission(role, key, enabled)
